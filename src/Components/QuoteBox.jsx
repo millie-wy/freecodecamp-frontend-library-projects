@@ -1,6 +1,6 @@
 import { useMediaQuery } from "@react-hook/media-query";
-import { useCallback, useEffect, useState } from "react";
 import { IconBrandTwitter } from "@tabler/icons-react";
+import { useCallback, useEffect, useState } from "react";
 
 const QuoteBox = ({ color }) => {
   const [data, setData] = useState([]);
@@ -59,7 +59,7 @@ const quoteBoxCSS = (smScreen) => ({
   background: smScreen ? "#ffffff60" : "transparent",
   padding: "30px 50px",
   width: "50vw",
-  minWidth: 300,
+  minWidth: 280,
   borderRadius: 15,
   display: "flex",
   flexDirection: "column",
