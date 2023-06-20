@@ -3,17 +3,18 @@ import { marked } from "marked";
 
 const MarkdownPreviewer = () => {
   let markdownExamples = [
-    "# Welcome to my React Markdown Previewer!",
-    "## This is a sub-heading!",
-    "[links](https://www.freecodecamp.org)",
-    `\`inline code\``,
-    `\`\`\`\nThis is a codeblock\nAnother line\n\`\`\``,
-    "* Some list",
-    "  * more list",
+    "# This is a heading",
+    "## This is a sub-heading",
+    "Unstyled text **Bold** *Italic* ~~Strikethrough~~",
+    "[Link](https://github.com/millie-wy)",
+    `\`Inline code\``,
+    `\`\`\`\nCode block\nAnother line in the code block\n\`\`\``,
+    "* Bulleted list",
+    "  * Sub item",
     "1. Numbered list",
-    "1. Number list cont",
-    "> blockquote",
-    "**bold text**",
+    "1. Another item in the numbered list",
+    "> This is a blockquote",
+    "Image:",
     "![Image alt](https://images.unsplash.com/photo-1612176232942-4ceef9e9acb8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80)",
   ];
 
@@ -26,29 +27,68 @@ const MarkdownPreviewer = () => {
   };
 
   return (
-    <div style={divCSS}>
-      <textarea
-        name="editor"
-        id="editor"
-        cols="60"
-        rows="10"
-        onChange={(e) => setInput(e.target.value)}
-        defaultValue={defaultValue}
-      />
-      <div
-        id="preview"
-        dangerouslySetInnerHTML={{ __html: setPreview(input) }}
-      />
+    <div style={containerCSS}>
+      <div style={divCSS}>
+        <h1 style={titleCSS}>React Markdown Previewer</h1>
+        <p style={textCSS}>Edit here</p>
+        <textarea
+          name="editor"
+          id="editor"
+          rows="10"
+          onChange={(e) => setInput(e.target.value)}
+          defaultValue={defaultValue}
+          style={textareaCSS}
+        />
+        <p style={textCSS}>Preview here</p>
+        <div
+          id="preview"
+          dangerouslySetInnerHTML={{ __html: setPreview(input) }}
+          style={previewCSS}
+        />
+      </div>
     </div>
   );
 };
 export default MarkdownPreviewer;
 
-const divCSS = {
+const containerCSS = {
   minHeight: "100vh",
+  background: "#F1C376",
   padding: 30,
+};
+
+const divCSS = {
   display: "flex",
   flexDirection: "column",
   placeItems: "center",
   placeContent: "center",
+  maxWidth: 650,
+  minWidth: 280,
+  width: "90%",
+  margin: "auto",
+};
+
+const textareaCSS = {
+  width: "90%",
+  outline: "none",
+  border: "none",
+  background: "#FFF4F4",
+  maxWidth: 585,
+  padding: 30,
+};
+
+const previewCSS = {
+  width: "90%",
+  background: "#F7E6C4",
+  padding: "10px 30px",
+};
+
+const titleCSS = {
+  color: "#606C5D",
+};
+
+const textCSS = {
+  marginBottom: 10,
+  alignSelf: "start",
+  color: "#606C5D",
 };
