@@ -1,13 +1,15 @@
-import { useState } from "react";
-
 const Home = () => {
-  const [hover, setIsHovering] = useState(false);
   const projects = [
     {
       name: "Quote Machine",
       href: "/quote-machine",
     },
+    {
+      name: "Markdown Previewer",
+      href: "/markdown-previewer",
+    },
   ];
+
   return (
     <div style={divCSS}>
       <h1 style={{ textAlign: "center" }}>
@@ -16,13 +18,8 @@ const Home = () => {
       </h1>
       <ul style={listCSS}>
         {projects.map((p, i) => (
-          <li key={i}>
-            <a
-              href={p.href}
-              style={linkCSS(hover)}
-              onMouseEnter={() => setIsHovering(true)}
-              onMouseLeave={() => setIsHovering(false)}
-            >
+          <li key={i} style={{ marginTop: 10 }}>
+            <a href={p.href} style={linkCSS}>
               {i + 1}. {p.name}
             </a>
           </li>
@@ -49,10 +46,9 @@ const listCSS = {
   margin: 0,
 };
 
-const linkCSS = (hover) => ({
+const linkCSS = {
   fontSize: 20,
-  marginTop: 20,
   fontWeight: 500,
   textDecoration: "none",
-  color: hover ? "#1e81b0" : "grey",
-});
+  color: "grey",
+};
