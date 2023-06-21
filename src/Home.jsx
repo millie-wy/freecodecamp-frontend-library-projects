@@ -8,6 +8,7 @@ const Home = () => {
       name: "Markdown Previewer",
       href: "/markdown-previewer",
     },
+    { name: "JavaScript Calculator", href: "/calculator" },
   ];
 
   return (
