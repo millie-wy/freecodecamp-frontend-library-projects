@@ -2,26 +2,41 @@ import { useState } from "react";
 
 const JavaScriptCalculator = () => {
   const [input, setInput] = useState([]);
-  const [output, setOutput] = useState(0);
+  const [output, setOutput] = useState([0]);
+  const prevInput = input[input.length - 1];
+  const prevPrevInput = input[input.length - 2];
+  const isOperator = (key) => operators.some((k) => k.display === key);
+  const isNumber = (key) => typeof key === "number";
+  const isDecimalPoint = (key) => key === ".";
 
-  const calculate = () => {
-    let copiedInput = input;
-    const prevInput = input[input.length - 1];
+  const clearInputAndOutput = () => setInputAndOutput([], [0]);
 
+  const setInputAndOutput = (input, output) => {
+    setInput(input);
+    setOutput(output ? output : input);
+  };
+
+  const prepareToCalculate = () => {
     // handles if = is being clicked multiple times
-    if (copiedInput.filter((i) => i === "=").length >= 1) return;
+    if (input.filter((i) => i === "=").length >= 1) return;
 
     // handles cases if 0 is in either input or output
-    if (output === 0) {
-      if (copiedInput[copiedInput.length - 1] === 0 || !copiedInput.length) {
-        return clearInputAndOutput();
-      }
+    if ((output === 0 && prevInput === 0) || (output === 0 && !input.length))
+      return clearInputAndOutput();
+
+    // removes the decimal point and unused operators before the =
+    if (isDecimalPoint(prevInput) || isOperator(prevInput)) {
+      let copiedInput = input;
+      if (isOperator(prevPrevInput)) copiedInput.pop();
+      copiedInput.pop();
+      setInput(copiedInput);
     }
 
-    // removes the . before the =
-    if (prevInput === ".") setInput((prevState) => [...prevState.splice(-1)]);
+    return performCalculation();
+  };
 
-    // performs calculation
+  const performCalculation = () => {
+    let copiedInput = input;
     const str = copiedInput
       .join("")
       .replaceAll("×", "*")
@@ -29,103 +44,105 @@ const JavaScriptCalculator = () => {
       .replaceAll("--", "+");
     // eslint-disable-next-line no-eval
     let evaluation = eval(str).toFixed(10);
-    setInput((prevState) => [...prevState, "=", parseFloat(evaluation)]);
-    setOutput(parseFloat(evaluation));
+    return setInputAndOutput(
+      (prevState) => [...prevState, "=", parseFloat(evaluation)],
+      parseFloat(evaluation)
+    );
   };
 
-  const handleClick = (key) => {
-    const prevInput = input[input.length - 1];
-
-    // multiple 0 when nothing is on display
-    if (input === 0 && key === 0) return;
-
-    // multiple .
-    if (prevInput === "." && key === ".") return;
+  const handleClick = (currKey) => {
+    let copiedInput = input;
+    if (output.length === 1 && output[0] === 0) setOutput([]);
+    if (output === 0 && currKey === 0) return; // multiple 0 when display is empty
+    if (isDecimalPoint(prevInput) && isDecimalPoint(currKey)) return; // multiple decimal points
 
     // any key is clicked after a calculation is done
     if (input.includes("=") && prevInput === output) {
       // a number
-      if (typeof key === "number") {
-        setInput([key]);
-        return setOutput(key);
-      }
+      if (isNumber(currKey)) return setInputAndOutput([currKey]);
+
       // an operator
-      if (operatorKeys.some((k) => k.display === key)) {
-        setInput([output, key]);
-        return setOutput(key);
-      }
+      if (isOperator(currKey))
+        return setInputAndOutput([output, currKey], [currKey]);
 
       // a decimal point
-      if (key === ".") {
-        setInput([0, "."]);
-        return setOutput(0 + key);
-      }
+      if (isDecimalPoint(currKey))
+        return setInputAndOutput([0, "."], [0, currKey]);
     }
 
-    // handles clicking of operator keys
-    if (operatorKeys.some((k) => k.display === key)) {
-      const prevPrevInput = input[input.length - 2];
+    // handles clicking of operators
+    if (isOperator(currKey)) {
+      setOutput([]);
+      if (!input.length) return; // return if input is empty
 
-      // return if input is empty
-      if (!input.length) return;
+      // if 2 operators are entered replaces all 2 entries
+      if (isOperator(prevPrevInput) && isOperator(prevInput)) {
+        copiedInput.splice(-2, 2);
+        copiedInput.push(currKey);
+        return setInputAndOutput(copiedInput, [currKey]);
+      }
 
       // if the prev input is an operator key or a decimal point
-      if (
-        prevInput === "." ||
-        operatorKeys.some((k) => k.display === prevInput)
-      ) {
-        // return if it is the same key as the last input and is not -
-        if (prevInput === key && key !== "-") return;
+      if (prevInput === "." || isOperator(prevInput)) {
+        // return if it is the same as the last input and is not -
+
+        if (prevInput === currKey && currKey !== "-") return;
 
         // if the input is -
-        if (key === "-") {
-          // reacts depends on the prev prev key
-          if (operatorKeys.some((k) => k.display === prevPrevInput)) return;
+        if (currKey === "-") {
+          if (isOperator(prevPrevInput)) return; // triple "-"
           if (prevPrevInput !== "-")
-            return setInput((prevState) => [...prevState, key]);
+            return setInput((prevState) => [...prevState, currKey]);
         }
+
         // else replaces it
-        setOutput(key);
-        return setInput((prevState) => [...prevState.splice(-1), key]);
+        copiedInput.pop();
+        copiedInput.push(currKey);
+        return setInputAndOutput(copiedInput, [currKey]);
       }
     }
 
     // handles clicking of decimal point
-    if (key === ".") {
+    if (isDecimalPoint(currKey)) {
       // add 0 before the decimal point if input is empty
-      if (!input.length) {
-        setOutput(0 + key);
-        return setInput([0, key]);
-      }
+      if (!input.length) return setInputAndOutput([0, currKey]);
 
       // add 0 before the decimal point in other cases
-      if (operatorKeys.some((k) => k.display === prevInput)) {
-        setInput((prevState) => [...prevState, 0, key]);
-        return setOutput(0 + key);
-      }
-
-      // if number being input is going to be a decimal
-      if (typeof prevInput === "number") {
-        setInput((prevState) => [...prevState, key]);
-        return setOutput((prevState) => prevState + key);
-      }
+      if (isOperator(prevInput))
+        return setInputAndOutput(
+          (prevState) => [...prevState, 0, currKey],
+          [(0, currKey)]
+        );
 
       // return if the output already has a decimal point
-      if (output % 1 !== 0) return;
+      if (typeof output === "string" || output.includes(".")) return;
+
+      // if number being input is going to be a decimal
+      if (isNumber(prevInput)) {
+        const copiedInput = input;
+        const regex = /×|÷|\+|-/gm;
+        const arrWithSplitStr = copiedInput.join("").toString().split(regex);
+        const numArr = arrWithSplitStr.map(Number);
+
+        return setInputAndOutput(
+          (prevState) => [...prevState, currKey],
+          [numArr[numArr.length - 1], currKey]
+        );
+      }
     }
 
-    if (prevInput === "." && typeof key === "number") {
-      setInput((prevState) => [...prevState, key]);
-      return setOutput((prevState) => prevState + key);
+    // handles clicking of numbers
+    if (isNumber(currKey)) {
+      if (isOperator(prevInput)) setOutput([]);
+      //   if (
+      //     prevInput === "." ||
+      //     (output % 1 !== 0 && typeof output !== "string")
+      //   ) {
+      //     return setOutput((prevState) => [...prevState, currKey]);
+      //   }
     }
 
-    setOutput(key);
-    return setInput((prevState) => [...prevState, key]);
-  };
-
-  const clearInputAndOutput = () => {
-    setInput([]);
-    setOutput(0);
+    return setInputAndOutput((prevState) => [...prevState, currKey]);
   };
 
   const numberKeys = [
@@ -140,7 +157,7 @@ const JavaScriptCalculator = () => {
     { id: "eight", display: 8 },
     { id: "seven", display: 7 },
   ];
-  const operatorKeys = [
+  const operators = [
     { id: "add", display: "+" },
     { id: "subtract", display: "-" },
     { id: "multiply", display: "×" },
@@ -177,7 +194,7 @@ const JavaScriptCalculator = () => {
             </div>
           </div>
           <div style={operatorsDivCSS}>
-            {operatorKeys.reverse().map((k, i) => (
+            {operators.reverse().map((k, i) => (
               <div
                 key={i}
                 id={k.id}
@@ -187,7 +204,7 @@ const JavaScriptCalculator = () => {
                 {k.display}
               </div>
             ))}
-            <div id="equals" style={equalKeyCSS} onClick={calculate}>
+            <div id="equals" style={equalKeyCSS} onClick={prepareToCalculate}>
               =
             </div>
           </div>
