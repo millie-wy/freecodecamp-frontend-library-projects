@@ -9,6 +9,7 @@ const Home = () => {
       href: "/markdown-previewer",
     },
     { name: "JavaScript Calculator", href: "/calculator" },
+    { name: "Drum Machine", href: "/drum-machine" },
   ];
 
   return (
