@@ -81,7 +81,6 @@ const DrumMachine = () => {
         (el) => el.keyCode === e.keyCode
       );
       if (!found) return;
-
       return playAudio(found);
     };
     document.addEventListener("keydown", detectKeyDown);
@@ -102,7 +101,12 @@ const DrumMachine = () => {
               onClick={() => playAudio(el)}
             >
               {el.id}
-              <audio src={el.audio} className="clip" id={el.id} />
+              <audio
+                src={el.audio}
+                className="clip"
+                id={el.id}
+                preload="auto"
+              />
             </div>
           ))}
         </div>
