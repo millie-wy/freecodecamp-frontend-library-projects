@@ -1,9 +1,10 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./Home";
-import QuoteMachine from "./Pages/QuoteMachine";
-import MarkdownPreviewer from "./Pages/MarkdownPreviewer";
-import JavaScriptCalculator from "./Pages/JavaScriptCalculator";
+import Clock from "./Pages/Clock";
 import DrumMachine from "./Pages/DrumMachine";
+import JavaScriptCalculator from "./Pages/JavaScriptCalculator";
+import MarkdownPreviewer from "./Pages/MarkdownPreviewer";
+import QuoteMachine from "./Pages/QuoteMachine";
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
         <Route path="/markdown-previewer" element={<MarkdownPreviewer />} />
         <Route path="/calculator" element={<JavaScriptCalculator />} />
         <Route path="/drum-machine" element={<DrumMachine />} />
+        <Route path="/clock" element={<Clock />} />
       </Routes>
     </BrowserRouter>
   );

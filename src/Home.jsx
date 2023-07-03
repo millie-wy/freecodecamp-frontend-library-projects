@@ -10,6 +10,7 @@ const Home = () => {
     },
     { name: "JavaScript Calculator", href: "/calculator" },
     { name: "Drum Machine", href: "/drum-machine" },
+    { name: "25 + 5 Clock", href: "/clock" },
   ];
 
   return (

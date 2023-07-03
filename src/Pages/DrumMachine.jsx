@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import BackButton from "../Shared/BackButton";
 
 const DrumMachine = () => {
   const drumPadEls = [
@@ -89,6 +90,7 @@ const DrumMachine = () => {
 
   return (
     <div style={containerCSS}>
+      <BackButton />
       <h1>Drum Machine</h1>
       <div id="drum-machine" style={drumDivCSS}>
         <div style={drumPadCSS}>
@@ -126,13 +128,13 @@ const DrumMachine = () => {
 export default DrumMachine;
 
 const containerCSS = {
-  minHeight: "100vh",
+  minHeight: "calc(100vh - 50px)",
+  paddingBottom: 50,
   background: "#318FB5",
   color: "#B0CAC7",
   display: "flex",
   flexDirection: "column",
   placeItems: "center",
-  placeContent: "center",
 };
 
 const drumDivCSS = {

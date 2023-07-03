@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { marked } from "marked";
+import BackButton from "../Shared/BackButton";
 
 const MarkdownPreviewer = () => {
   let markdownExamples = [
@@ -28,8 +29,9 @@ const MarkdownPreviewer = () => {
 
   return (
     <div style={containerCSS}>
+      <BackButton />
       <div style={divCSS}>
-        <h1 style={titleCSS}>React Markdown Previewer</h1>
+        <h1>React Markdown Previewer</h1>
         <p style={textCSS}>Edit here</p>
         <textarea
           name="editor"
@@ -52,16 +54,18 @@ const MarkdownPreviewer = () => {
 export default MarkdownPreviewer;
 
 const containerCSS = {
-  minHeight: "100vh",
+  minHeight: "calc(100vh - 50px)",
+  paddingBottom: 50,
   background: "#F1C376",
-  padding: 30,
+  color: "#606C5D",
+  display: "flex",
+  flexDirection: "column",
 };
 
 const divCSS = {
   display: "flex",
   flexDirection: "column",
   placeItems: "center",
-  placeContent: "center",
   maxWidth: 650,
   minWidth: 280,
   width: "90%",
@@ -81,10 +85,6 @@ const previewCSS = {
   width: "90%",
   background: "#F7E6C4",
   padding: "10px 30px",
-};
-
-const titleCSS = {
-  color: "#606C5D",
 };
 
 const textCSS = {

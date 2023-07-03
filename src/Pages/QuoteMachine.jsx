@@ -1,6 +1,7 @@
 import { useMediaQuery } from "@react-hook/media-query";
 import { IconBrandTwitter } from "@tabler/icons-react";
 import { useCallback, useEffect, useState } from "react";
+import BackButton from "../Shared/BackButton";
 
 const QuoteMachine = () => {
   const [bgColor, setBgColor] = useState("");
@@ -39,6 +40,8 @@ const QuoteMachine = () => {
 
   return (
     <div style={divCSS(bgColor)}>
+      <BackButton />
+      <h1>Random Quote Machine</h1>
       {quote && (
         <div id="quote-box" style={quoteBoxCSS(xsOrAbove)}>
           <h1 id="text" style={h1CSS}>
@@ -74,19 +77,19 @@ const QuoteMachine = () => {
 
 export default QuoteMachine;
 
-// Below are CSS
-
 const divCSS = (bgColor) => ({
   background: bgColor,
-  minHeight: "100vh",
-  padding: 30,
+  color: "#ffffff60",
+  minHeight: "calc(100vh - 50px)",
+  paddingBottom: 50,
   display: "flex",
+  flexDirection: "column",
   placeItems: "center",
-  placeContent: "center",
 });
 
 const quoteBoxCSS = (smScreen) => ({
   background: smScreen ? "#ffffff60" : "transparent",
+  marginTop: 20,
   padding: "30px 50px",
   width: "50vw",
   minWidth: 280,
@@ -96,6 +99,7 @@ const quoteBoxCSS = (smScreen) => ({
   placeItems: "center",
   placeContent: "center",
   color: "#fff",
+  height: "100%",
 });
 
 const h1CSS = {

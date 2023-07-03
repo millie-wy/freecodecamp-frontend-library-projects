@@ -1,4 +1,5 @@
 import { useState } from "react";
+import BackButton from "../Shared/BackButton";
 
 const JavaScriptCalculator = () => {
   const [input, setInput] = useState([]);
@@ -145,6 +146,7 @@ const JavaScriptCalculator = () => {
 
   return (
     <div style={containerCSS}>
+      <BackButton />
       <h1>React Calculator</h1>
       <div style={calculatorDivCSS}>
         <div style={displayCSS}>
@@ -196,13 +198,13 @@ const JavaScriptCalculator = () => {
 export default JavaScriptCalculator;
 
 const containerCSS = {
-  minHeight: "100vh",
+  minHeight: "calc(100vh - 50px)",
+  paddingBottom: 50,
   background: "#222831",
-  color: "#EEEEEE",
+  color: "#cecece",
   display: "flex",
   flexDirection: "column",
   placeItems: "center",
-  placeContent: "center",
 };
 
 const calculatorDivCSS = {
