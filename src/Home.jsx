@@ -1,4 +1,7 @@
+import { useState } from "react";
+
 const Home = () => {
+  const [isHovering, setIsHovering] = useState(undefined);
   const projects = [
     {
       name: "Quote Machine",
@@ -21,8 +24,13 @@ const Home = () => {
       </h1>
       <ul style={listCSS}>
         {projects.map((p, i) => (
-          <li key={i} style={{ marginTop: 10 }}>
-            <a href={p.href} style={linkCSS}>
+          <li
+            key={i}
+            style={{ marginTop: 10 }}
+            onMouseEnter={() => setIsHovering(i)}
+            onMouseLeave={() => setIsHovering(undefined)}
+          >
+            <a href={p.href} style={linkCSS(isHovering === i)}>
               {i + 1}. {p.name}
             </a>
           </li>
@@ -36,22 +44,23 @@ export default Home;
 
 const divCSS = {
   background: "#eeeee4",
-  minHeight: "100vh",
+  minHeight: "calc(100vh - 100px)",
+  paddingTop: 100,
   display: "flex",
   flexDirection: "column",
   placeItems: "center",
-  paddingTop: 100,
 };
 
 const listCSS = {
   listStyleType: "none",
   padding: 0,
   margin: 0,
+  width: 220,
 };
 
-const linkCSS = {
+const linkCSS = (hovering) => ({
   fontSize: 20,
-  fontWeight: 500,
+  fontWeight: hovering ? 600 : 500,
   textDecoration: "none",
-  color: "grey",
-};
+  color: hovering ? "orange" : "grey",
+});

@@ -1,3 +1,4 @@
+import { IconChevronLeft } from "@tabler/icons-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -12,7 +13,8 @@ const BackButton = () => {
       onMouseLeave={() => setIsHovering(false)}
       onClick={() => navigate(-1)}
     >
-      ⇦ BACK
+      <IconChevronLeft size={15} />
+      BACK
     </div>
   );
 };
@@ -25,4 +27,7 @@ const buttonCSS = (isHovering) => ({
   margin: "40px 0 20px 40px",
   alignSelf: "start",
   fontWeight: 600,
+  display: "flex",
+  placeItems: "center",
+  gap: 5,
 });
