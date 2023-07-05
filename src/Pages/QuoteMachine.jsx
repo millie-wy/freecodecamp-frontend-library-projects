@@ -44,9 +44,9 @@ const QuoteMachine = () => {
       <h1>Random Quote Machine</h1>
       {quote && (
         <div id="quote-box" style={quoteBoxCSS(xsOrAbove)}>
-          <h1 id="text" style={h1CSS}>
+          <h2 id="text" style={h2CSS}>
             ❝ {quote.quote} ❞
-          </h1>
+          </h2>
           <p id="author" style={textCSS}>
             - {quote.author}
           </p>
@@ -102,7 +102,7 @@ const quoteBoxCSS = (smScreen) => ({
   height: "100%",
 });
 
-const h1CSS = {
+const h2CSS = {
   fontSize: 28,
 };
 
