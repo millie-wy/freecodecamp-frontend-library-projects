@@ -11,20 +11,25 @@ import { zeroPad } from "react-countdown";
 import BackButton from "../Shared/BackButton";
 
 const Clock = () => {
+  const defaultBreakLength = 300;
+  const defaultSessionLength = 1500;
   const xsOrAbove = useMediaQuery("only screen and (min-width: 400px)");
-  const [breakLength, setBreakLength] = useState(300);
-  const [sessionLength, setSessionLength] = useState(1500);
+  const [breakLength, setBreakLength] = useState(defaultBreakLength);
+  const [sessionLength, setSessionLength] = useState(defaultSessionLength);
   const [onBreak, setOnBreak] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(1500);
+  const [timeLeft, setTimeLeft] = useState(defaultSessionLength);
 
   const reset = () => {
+    const beepAudio = document.getElementById("beep");
     setTimeLeft(0);
     setOnBreak(false);
-    setBreakLength(300);
-    setSessionLength(1500);
-    setTimeout(() => setTimeLeft(1500), 200);
-    return setIsStarting(false);
+    setBreakLength(defaultBreakLength);
+    setSessionLength(defaultSessionLength);
+    setTimeout(() => setTimeLeft(defaultSessionLength), 200);
+    setIsStarting(false);
+    beepAudio.pause();
+    beepAudio.currentTime = 0;
   };
 
   const incrementBreak = () => {
@@ -55,7 +60,7 @@ const Clock = () => {
     }
   };
 
-  const convertSecsToMins = (seconds) => `${seconds / 60}`;
+  const convertSecsToMins = (seconds) => `${(seconds / 60).toFixed(0)}`;
 
   const clock = () => {
     if (timeLeft <= 0) return "00:00";
@@ -66,15 +71,15 @@ const Clock = () => {
 
   useEffect(() => {
     if (isStarting) {
+      const beepAudio = document.getElementById("beep");
       const interval = setInterval(
         () => setTimeLeft((prevState) => prevState - 1),
         1000
       );
-      if (timeLeft === 0) {
-        setTimeout(() => {
-          setOnBreak(!onBreak);
-          !onBreak ? setTimeLeft(breakLength) : setTimeLeft(sessionLength);
-        }, 1000);
+      if (timeLeft < 0) {
+        setOnBreak(!onBreak);
+        !onBreak ? setTimeLeft(breakLength) : setTimeLeft(sessionLength);
+        beepAudio.play();
       }
       return () => clearInterval(interval);
     }
@@ -86,7 +91,11 @@ const Clock = () => {
       <h1>25 + 5 Clock</h1>
       <div style={controlPanelsCSS(xsOrAbove)}>
         <div style={panelCSS}>
-          <button id="break-decrement" onClick={decrementBreak}>
+          <button
+            id="break-decrement"
+            onClick={decrementBreak}
+            style={buttonCSS}
+          >
             <IconMinus stroke={3} style={icons} />
           </button>
           <div style={panelLabelAndValueCSS}>
@@ -97,12 +106,20 @@ const Clock = () => {
               Break Length
             </p>
           </div>
-          <button id="break-increment" onClick={incrementBreak}>
+          <button
+            id="break-increment"
+            onClick={incrementBreak}
+            style={buttonCSS}
+          >
             <IconPlus stroke={3} style={icons} />
           </button>
         </div>
         <div style={panelCSS}>
-          <button id="session-decrement" onClick={decrementSession}>
+          <button
+            id="session-decrement"
+            onClick={decrementSession}
+            style={buttonCSS}
+          >
             <IconMinus stroke={3} style={icons} />
           </button>
           <div style={panelLabelAndValueCSS}>
@@ -113,29 +130,42 @@ const Clock = () => {
               Session Length
             </p>
           </div>
-          <button id="session-increment" onClick={incrementSession}>
+          <button
+            id="session-increment"
+            onClick={incrementSession}
+            style={buttonCSS}
+          >
             <IconPlus stroke={3} style={icons} />
           </button>
         </div>
       </div>
       <div style={timerCSS}>
-        <p id="timer-label" style={labelCSS}>
-          {onBreak ? "Break" : "Session"}
+        <p id="timer-label" style={timerLabelCSS(timeLeft)}>
+          {!onBreak ? "Session" : "Break"}
         </p>
-        <h4 id="time-left" style={valueCSS}>
+        <h4 id="time-left" style={timerValueCSS(timeLeft)}>
           {clock()}
         </h4>
         <div style={{ display: "flex", flexDirection: "row" }}>
-          <button id="start_stop" onClick={() => setIsStarting(!isStarting)}>
+          <button
+            id="start_stop"
+            onClick={() => setIsStarting(!isStarting)}
+            style={buttonCSS}
+          >
             {!isStarting ? (
               <IconPlay style={icons} />
             ) : (
               <IconPause style={icons} />
             )}
           </button>
-          <button id="reset" onClick={reset}>
+          <button id="reset" onClick={reset} style={buttonCSS}>
             <IconRefresh style={icons} stroke={3} />
           </button>
+          <audio
+            src="/assets/audio/beep-warning.mp3"
+            id="beep"
+            preload="auto"
+          />
         </div>
       </div>
     </div>
@@ -147,8 +177,8 @@ export default Clock;
 const containerCSS = {
   minHeight: "calc(100vh - 50px)",
   paddingBottom: 50,
-  background: "#F1C376",
-  color: "#606C5D",
+  background: "#A0C49D",
+  color: "#F7FFE5",
   display: "flex",
   flexDirection: "column",
   placeItems: "center",
@@ -159,6 +189,10 @@ const controlPanelsCSS = (smScreen) => ({
   flexDirection: smScreen ? "row" : "column",
   columnGap: 50,
   rowGap: 20,
+  padding: 20,
+  background: "#C4D7B2",
+  color: "#3c3c3c90",
+  borderRadius: 5,
 });
 
 const panelCSS = {
@@ -180,12 +214,12 @@ const panelLabelAndValueCSS = {
 };
 
 const valueCSS = {
-  margin: 5,
+  margin: 0,
   fontSize: 30,
 };
 
 const labelCSS = {
-  margin: 0,
+  margin: "5px 0",
 };
 
 const timerCSS = {
@@ -196,3 +230,23 @@ const timerCSS = {
   padding: 0,
   width: 120,
 };
+
+const buttonCSS = {
+  background: "none",
+  border: "none",
+  color: "inherit",
+};
+
+const timerLabelCSS = (timeLeft) => ({
+  ...labelCSS,
+  color: timeLeft < 60 ? "#FF6666" : "inherit",
+  fontSize: 24,
+  fontWeight: 600,
+});
+
+const timerValueCSS = (timeLeft) => ({
+  ...valueCSS,
+  color: timeLeft < 60 ? "#FF6666" : "inherit",
+  fontSize: 40,
+  margin: "5px 0 10px 0",
+});
