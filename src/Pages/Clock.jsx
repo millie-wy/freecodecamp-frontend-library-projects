@@ -22,11 +22,10 @@ const Clock = () => {
 
   const reset = () => {
     const beepAudio = document.getElementById("beep");
-    setTimeLeft(0);
     setOnBreak(false);
     setBreakLength(defaultBreakLength);
     setSessionLength(defaultSessionLength);
-    setTimeout(() => setTimeLeft(defaultSessionLength), 200);
+    setTimeLeft(defaultSessionLength);
     setIsStarting(false);
     beepAudio.pause();
     beepAudio.currentTime = 0;
